@@ -1,0 +1,19 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  -webkit-font-smoothing: antialiased;
+}
+
+.plate-stack {
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+}
+
+.plate {
+  width: 10px;
+  background: linear-gradient(180deg, #F2C14E, #C99A2E);
+  border-radius: 2px 2px 0 0;
+}

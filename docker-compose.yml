@@ -1,0 +1,28 @@
+services:
+  backend:
+    build: ./backend
+    container_name: gaintrack-backend
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: sqlite:////data/gaintrack.db
+      SECRET_KEY: ${SECRET_KEY}
+      CORS_ORIGINS: ${CORS_ORIGINS:-*}
+    volumes:
+      - gaintrack-data:/data
+    expose:
+      - "8000"
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        VITE_API_URL: /api
+    container_name: gaintrack-frontend
+    restart: unless-stopped
+    ports:
+      - "${WEB_PORT:-8080}:80"
+    depends_on:
+      - backend
+
+volumes:
+  gaintrack-data:
