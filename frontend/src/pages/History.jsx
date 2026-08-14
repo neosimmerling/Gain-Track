@@ -33,9 +33,16 @@ export default function History() {
                   year: 'numeric',
                 })}
               </p>
-              <button onClick={() => handleDelete(w.id)} className="text-xs text-bad">
-                Löschen
-              </button>
+              <div className="flex items-center gap-2">
+                {w.duration_seconds && (
+                  <span className="text-xs font-mono text-muted">
+                    {Math.round(w.duration_seconds / 60)} min
+                  </span>
+                )}
+                <button onClick={() => handleDelete(w.id)} className="text-xs text-bad">
+                  Löschen
+                </button>
+              </div>
             </div>
             <ul className="text-sm space-y-1">
               {w.sets.map((s) => (

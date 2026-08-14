@@ -9,6 +9,9 @@ import Dashboard from './pages/Dashboard.jsx'
 import WorkoutForm from './pages/WorkoutForm.jsx'
 import History from './pages/History.jsx'
 import Friends from './pages/Friends.jsx'
+import Templates from './pages/Templates.jsx'
+import TemplateForm from './pages/TemplateForm.jsx'
+import ActiveWorkout from './pages/ActiveWorkout.jsx'
 
 function AppShell({ children }) {
   const { user } = useAuth()
@@ -55,6 +58,30 @@ export default function App() {
           element={
             <ProtectedRoute>
               <Friends />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/templates"
+          element={
+            <ProtectedRoute>
+              <Templates />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/templates/new"
+          element={
+            <ProtectedRoute>
+              <TemplateForm />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/templates/:templateId/start"
+          element={
+            <ProtectedRoute>
+              <ActiveWorkout />
             </ProtectedRoute>
           }
         />

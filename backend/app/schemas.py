@@ -71,6 +71,8 @@ class SetEntryOut(BaseModel):
 class WorkoutCreate(BaseModel):
     date: Optional[datetime] = None
     notes: Optional[str] = None
+    duration_seconds: Optional[int] = None
+    template_id: Optional[int] = None
     sets: list[SetEntryCreate] = []
 
 
@@ -79,7 +81,45 @@ class WorkoutOut(BaseModel):
     id: int
     date: datetime
     notes: Optional[str] = None
+    duration_seconds: Optional[int] = None
+    template_id: Optional[int] = None
     sets: list[SetEntryOut] = []
+
+
+# ---------- Workout Templates ----------
+
+class TemplateExerciseCreate(BaseModel):
+    exercise_id: int
+    order_index: int = 0
+    target_sets: Optional[int] = None
+    target_reps: Optional[str] = None
+    notes: Optional[str] = None
+
+
+class TemplateExerciseOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+    id: int
+    exercise_id: int
+    exercise_name: Optional[str] = None
+    order_index: int
+    target_sets: Optional[int] = None
+    target_reps: Optional[str] = None
+    notes: Optional[str] = None
+
+
+class WorkoutTemplateCreate(BaseModel):
+    name: str
+    notes: Optional[str] = None
+    items: list[TemplateExerciseCreate] = []
+
+
+class WorkoutTemplateOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+    id: int
+    name: str
+    notes: Optional[str] = None
+    created_at: datetime
+    items: list[TemplateExerciseOut] = []
 
 
 # ---------- Stats ----------

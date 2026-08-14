@@ -56,6 +56,11 @@ export const api = {
   createWorkout: (payload) => request('/workouts', { method: 'POST', body: payload }),
   deleteWorkout: (id) => request(`/workouts/${id}`, { method: 'DELETE' }),
 
+  listTemplates: () => request('/templates'),
+  getTemplate: (id) => request(`/templates/${id}`),
+  createTemplate: (payload) => request('/templates', { method: 'POST', body: payload }),
+  deleteTemplate: (id) => request(`/templates/${id}`, { method: 'DELETE' }),
+
   exerciseProgress: (exerciseId) => request(`/stats/exercise/${exerciseId}/progress`),
   summary: () => request('/stats/summary'),
 

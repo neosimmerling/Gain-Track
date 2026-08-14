@@ -21,6 +21,7 @@ class User(Base):
     workouts = relationship("Workout", back_populates="user", cascade="all, delete-orphan")
     exercises = relationship("Exercise", back_populates="owner", cascade="all, delete-orphan")
     milestones = relationship("Milestone", back_populates="user", cascade="all, delete-orphan")
+    templates = relationship("WorkoutTemplate", back_populates="user", cascade="all, delete-orphan")
 
 
 class Exercise(Base):
@@ -46,6 +47,8 @@ class Workout(Base):
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
     date = Column(DateTime, default=datetime.utcnow, index=True)
     notes = Column(Text, nullable=True)
+    duration_seconds = Column(Integer, nullable=True)
+    template_id = Column(Integer, ForeignKey("workout_templates.id"), nullable=True)
 
     user = relationship("User", back_populates="workouts")
     sets = relationship("SetEntry", back_populates="workout", cascade="all, delete-orphan", order_by="SetEntry.set_number")
@@ -99,3 +102,36 @@ class Friendship(Base):
     created_at = Column(DateTime, default=datetime.utcnow)
 
     __table_args__ = (UniqueConstraint("requester_id", "addressee_id", name="uq_friendship_pair"),)
+
+
+class WorkoutTemplate(Base):
+    __tablename__ = "workout_templates"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
+    name = Column(String, nullable=False)  # z.B. "Push Day A"
+    notes = Column(Text, nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    user = relationship("User", back_populates="templates")
+    items = relationship(
+        "TemplateExercise",
+        back_populates="template",
+        cascade="all, delete-orphan",
+        order_by="TemplateExercise.order_index",
+    )
+
+
+class TemplateExercise(Base):
+    __tablename__ = "template_exercises"
+
+    id = Column(Integer, primary_key=True, index=True)
+    template_id = Column(Integer, ForeignKey("workout_templates.id"), nullable=False, index=True)
+    exercise_id = Column(Integer, ForeignKey("exercises.id"), nullable=False, index=True)
+    order_index = Column(Integer, nullable=False, default=0)
+    target_sets = Column(Integer, nullable=True)
+    target_reps = Column(String, nullable=True)  # z.B. "8-12", freitext
+    notes = Column(String, nullable=True)  # z.B. "Untergriff, eng"
+
+    template = relationship("WorkoutTemplate", back_populates="items")
+    exercise = relationship("Exercise")

@@ -3,6 +3,7 @@ import { NavLink } from 'react-router-dom'
 
 const items = [
   { to: '/', label: 'Übersicht', icon: '🏠' },
+  { to: '/templates', label: 'Pläne', icon: '📑' },
   { to: '/log', label: 'Eintragen', icon: '➕' },
   { to: '/history', label: 'Verlauf', icon: '📋' },
   { to: '/friends', label: 'Freunde', icon: '🤝' },
@@ -17,12 +18,12 @@ export default function Nav() {
           to={item.to}
           end={item.to === '/'}
           className={({ isActive }) =>
-            `flex flex-col items-center gap-0.5 px-3 py-1 text-xs font-medium ${
+            `flex flex-col items-center gap-0.5 px-1.5 py-1 text-[10px] leading-tight font-medium ${
               isActive ? 'text-plate' : 'text-muted'
             }`
           }
         >
-          <span className="text-lg leading-none">{item.icon}</span>
+          <span className="text-base leading-none">{item.icon}</span>
           {item.label}
         </NavLink>
       ))}

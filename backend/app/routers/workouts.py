@@ -45,6 +45,8 @@ def create_workout(
         user_id=current_user.id,
         date=payload.date or datetime.utcnow(),
         notes=payload.notes,
+        duration_seconds=payload.duration_seconds,
+        template_id=payload.template_id,
     )
     db.add(workout)
     db.flush()  # get workout.id
