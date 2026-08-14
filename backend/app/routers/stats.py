@@ -33,10 +33,12 @@ def exercise_progress(
 
     points = []
     for day, day_sets in sorted(by_date.items()):
-        max_weight = max(s.weight for s in day_sets)
-        total_volume = sum(s.weight * s.reps for s in day_sets)
+        weight_sets = [s for s in day_sets if s.weight is not None]
+        max_weight = max((s.weight for s in weight_sets), default=None)
+        total_volume = sum((s.weight or 0) * (s.reps or 0) for s in day_sets)
+        total_duration = sum((s.duration_seconds or 0) for s in day_sets)
         points.append(schemas.ExerciseProgressPoint(
-            date=day, max_weight=max_weight, total_volume=total_volume
+            date=day, max_weight=max_weight, total_volume=total_volume, total_duration_seconds=total_duration
         ))
     return points
 

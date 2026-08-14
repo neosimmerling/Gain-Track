@@ -56,6 +56,9 @@ def _check_weekly_count(db: Session, user: models.User) -> None:
 
 def _check_new_prs(db: Session, user: models.User, workout: models.Workout) -> None:
     for entry in workout.sets:
+        if entry.weight is None:
+            continue  # Cardio-Sätze (Zeit statt Gewicht) haben keinen PR im klassischen Sinn
+
         previous_max = (
             db.query(func.max(models.SetEntry.weight))
             .join(models.Workout)

@@ -61,8 +61,9 @@ class SetEntry(Base):
     workout_id = Column(Integer, ForeignKey("workouts.id"), nullable=False, index=True)
     exercise_id = Column(Integer, ForeignKey("exercises.id"), nullable=False, index=True)
     set_number = Column(Integer, nullable=False, default=1)
-    reps = Column(Integer, nullable=False)
-    weight = Column(Float, nullable=False, default=0)
+    reps = Column(Integer, nullable=True)
+    weight = Column(Float, nullable=True)
+    duration_seconds = Column(Integer, nullable=True)  # für Cardio-Übungen (unit="min") statt reps/weight
     rpe = Column(Float, nullable=True)
 
     workout = relationship("Workout", back_populates="sets")

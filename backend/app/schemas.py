@@ -52,8 +52,9 @@ class ExerciseOut(BaseModel):
 class SetEntryCreate(BaseModel):
     exercise_id: int
     set_number: int = 1
-    reps: int
-    weight: float
+    reps: Optional[int] = None
+    weight: Optional[float] = None
+    duration_seconds: Optional[int] = None
     rpe: Optional[float] = None
 
 
@@ -62,9 +63,11 @@ class SetEntryOut(BaseModel):
     id: int
     exercise_id: int
     exercise_name: Optional[str] = None
+    exercise_unit: Optional[str] = None
     set_number: int
-    reps: int
-    weight: float
+    reps: Optional[int] = None
+    weight: Optional[float] = None
+    duration_seconds: Optional[int] = None
     rpe: Optional[float] = None
 
 
@@ -101,6 +104,7 @@ class TemplateExerciseOut(BaseModel):
     id: int
     exercise_id: int
     exercise_name: Optional[str] = None
+    exercise_unit: Optional[str] = None
     order_index: int
     target_sets: Optional[int] = None
     target_reps: Optional[str] = None
@@ -126,8 +130,9 @@ class WorkoutTemplateOut(BaseModel):
 
 class ExerciseProgressPoint(BaseModel):
     date: datetime
-    max_weight: float
-    total_volume: float
+    max_weight: Optional[float] = None
+    total_volume: float = 0
+    total_duration_seconds: int = 0
 
 
 # ---------- Milestones ----------

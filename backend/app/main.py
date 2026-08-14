@@ -22,6 +22,7 @@ def seed_default_exercises():
         ("Fliegende (Kurzhantel)", "Push", "kg"),
         ("Dips (Brust, vorgeneigt)", "Push", "kg"),
         ("Dips (Trizeps, aufrecht)", "Push", "kg"),
+        ("Dips (normal)", "Push", "kg"),
         ("Schulterdrücken (Langhantel)", "Push", "kg"),
         ("Schulterdrücken (Kurzhantel)", "Push", "kg"),
         ("Schulterdrücken (Maschine)", "Push", "kg"),
@@ -31,6 +32,7 @@ def seed_default_exercises():
         ("Trizepsdrücken (Kabel, Seil)", "Push", "kg"),
         ("Trizepsdrücken (Kabel, Stange)", "Push", "kg"),
         ("Trizeps überkopf (Kurzhantel)", "Push", "kg"),
+        ("Trizepsstrecken (Kordel)", "Push", "kg"),
 
         # --- Pull (Rücken / Bizeps) ---
         ("Kreuzheben (konventionell)", "Pull", "kg"),
@@ -47,8 +49,16 @@ def seed_default_exercises():
         ("Kabelrudern (sitzend, eng)", "Pull", "kg"),
         ("Kabelrudern (sitzend, breit)", "Pull", "kg"),
         ("T-Bar-Rudern", "Pull", "kg"),
+        ("Seal Row", "Pull", "kg"),
+        ("Rudern mit Seil zum Hals", "Pull", "kg"),
+        ("Rudern mit Seil zum Hals (kniend)", "Pull", "kg"),
+        ("Rudern aufrecht am Kabelzug", "Pull", "kg"),
+        ("Rückenstrecker", "Pull", "kg"),
         ("Bizepscurls (Langhantel)", "Pull", "kg"),
         ("Bizepscurls (Kurzhantel)", "Pull", "kg"),
+        ("Bizepscurls (SZ-Stange)", "Pull", "kg"),
+        ("Bizepscurls (SZ-Stange, Obergriff)", "Pull", "kg"),
+        ("Bizepscurls (Hammergriff)", "Pull", "kg"),
         ("Hammercurls", "Pull", "kg"),
         ("Konzentrationscurls", "Pull", "kg"),
 
@@ -71,6 +81,13 @@ def seed_default_exercises():
         ("Plank", "Core", "kg"),
         ("Beinheben (hängend)", "Core", "kg"),
         ("Russian Twists", "Core", "kg"),
+
+        # --- Cardio (Zeit statt Gewicht/Wiederholungen) ---
+        ("Fahrrad (Ergometer)", "Cardio", "min"),
+        ("Rudergerät", "Cardio", "min"),
+        ("Laufband", "Cardio", "min"),
+        ("Crosstrainer", "Cardio", "min"),
+        ("Seilspringen", "Cardio", "min"),
     ]
     db = SessionLocal()
     try:

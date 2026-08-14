@@ -29,7 +29,7 @@ export default function ActiveWorkout() {
       const initial = {}
       t.items.forEach((item) => {
         const count = item.target_sets || 1
-        initial[item.id] = Array.from({ length: count }, () => ({ reps: '', weight: '' }))
+        initial[item.id] = Array.from({ length: count }, () => ({ reps: '', weight: '', duration_minutes: '' }))
       })
       setEntries(initial)
     })
@@ -56,7 +56,7 @@ export default function ActiveWorkout() {
   const addSet = (itemId) => {
     setEntries((prev) => ({
       ...prev,
-      [itemId]: [...(prev[itemId] || []), { reps: '', weight: '' }],
+      [itemId]: [...(prev[itemId] || []), { reps: '', weight: '', duration_minutes: '' }],
     }))
   }
 
@@ -64,7 +64,7 @@ export default function ActiveWorkout() {
     () =>
       Object.values(entries)
         .flat()
-        .filter((s) => s.reps !== '' && s.weight !== '').length,
+        .filter((s) => (s.reps !== '' && s.weight !== '') || s.duration_minutes !== '').length,
     [entries]
   )
 
@@ -76,8 +76,15 @@ export default function ActiveWorkout() {
       const sets = []
       template.items.forEach((item) => {
         const list = entries[item.id] || []
+        const cardio = item.exercise_unit === 'min'
         list.forEach((s, idx) => {
-          if (s.reps !== '' && s.weight !== '') {
+          if (cardio && s.duration_minutes !== '') {
+            sets.push({
+              exercise_id: item.exercise_id,
+              set_number: idx + 1,
+              duration_seconds: Math.round(Number(s.duration_minutes) * 60),
+            })
+          } else if (!cardio && s.reps !== '' && s.weight !== '') {
             sets.push({
               exercise_id: item.exercise_id,
               set_number: idx + 1,
@@ -138,29 +145,44 @@ export default function ActiveWorkout() {
             {item.notes && <p className="text-xs text-muted italic mb-2">{item.notes}</p>}
 
             <div className="space-y-1.5">
-              {(entries[item.id] || []).map((s, idx) => (
-                <div key={idx} className="flex items-center gap-2">
-                  <span className="text-xs text-muted font-mono w-5">{idx + 1}.</span>
-                  <input
-                    type="number"
-                    inputMode="numeric"
-                    placeholder="Wdh."
-                    value={s.reps}
-                    onChange={(e) => updateEntry(item.id, idx, 'reps', e.target.value)}
-                    className="flex-1 bg-surfaceHi rounded-lg px-2 py-2 font-mono text-sm outline-none"
-                  />
-                  <span className="text-muted text-xs">×</span>
-                  <input
-                    type="number"
-                    inputMode="decimal"
-                    step="0.5"
-                    placeholder="kg"
-                    value={s.weight}
-                    onChange={(e) => updateEntry(item.id, idx, 'weight', e.target.value)}
-                    className="flex-1 bg-surfaceHi rounded-lg px-2 py-2 font-mono text-sm outline-none"
-                  />
-                </div>
-              ))}
+              {(entries[item.id] || []).map((s, idx) =>
+                item.exercise_unit === 'min' ? (
+                  <div key={idx} className="flex items-center gap-2">
+                    <span className="text-xs text-muted font-mono w-5">{idx + 1}.</span>
+                    <input
+                      type="number"
+                      inputMode="decimal"
+                      step="0.5"
+                      placeholder="Dauer (min)"
+                      value={s.duration_minutes}
+                      onChange={(e) => updateEntry(item.id, idx, 'duration_minutes', e.target.value)}
+                      className="flex-1 bg-surfaceHi rounded-lg px-2 py-2 font-mono text-sm outline-none"
+                    />
+                  </div>
+                ) : (
+                  <div key={idx} className="flex items-center gap-2">
+                    <span className="text-xs text-muted font-mono w-5">{idx + 1}.</span>
+                    <input
+                      type="number"
+                      inputMode="numeric"
+                      placeholder="Wdh."
+                      value={s.reps}
+                      onChange={(e) => updateEntry(item.id, idx, 'reps', e.target.value)}
+                      className="flex-1 bg-surfaceHi rounded-lg px-2 py-2 font-mono text-sm outline-none"
+                    />
+                    <span className="text-muted text-xs">×</span>
+                    <input
+                      type="number"
+                      inputMode="decimal"
+                      step="0.5"
+                      placeholder="kg"
+                      value={s.weight}
+                      onChange={(e) => updateEntry(item.id, idx, 'weight', e.target.value)}
+                      className="flex-1 bg-surfaceHi rounded-lg px-2 py-2 font-mono text-sm outline-none"
+                    />
+                  </div>
+                )
+              )}
             </div>
             <button
               type="button"

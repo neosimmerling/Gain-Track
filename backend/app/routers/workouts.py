@@ -15,6 +15,7 @@ def _to_out(workout: models.Workout) -> schemas.WorkoutOut:
     out = schemas.WorkoutOut.model_validate(workout)
     for s, orm_set in zip(out.sets, workout.sets):
         s.exercise_name = orm_set.exercise.name if orm_set.exercise else None
+        s.exercise_unit = orm_set.exercise.unit if orm_set.exercise else None
     return out
 
 
@@ -61,6 +62,7 @@ def create_workout(
             set_number=s.set_number,
             reps=s.reps,
             weight=s.weight,
+            duration_seconds=s.duration_seconds,
             rpe=s.rpe,
         ))
 

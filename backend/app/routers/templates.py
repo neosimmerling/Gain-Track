@@ -12,6 +12,7 @@ def _to_out(template: models.WorkoutTemplate) -> schemas.WorkoutTemplateOut:
     out = schemas.WorkoutTemplateOut.model_validate(template)
     for item_out, item_orm in zip(out.items, template.items):
         item_out.exercise_name = item_orm.exercise.name if item_orm.exercise else None
+        item_out.exercise_unit = item_orm.exercise.unit if item_orm.exercise else None
     return out
 
 

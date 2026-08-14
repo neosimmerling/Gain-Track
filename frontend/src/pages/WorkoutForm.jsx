@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { api } from '../api'
 
-const emptySet = () => ({ exercise_id: '', set_number: 1, reps: '', weight: '', rpe: '' })
+const emptySet = () => ({ exercise_id: '', set_number: 1, reps: '', weight: '', duration_minutes: '', rpe: '' })
 
 export default function WorkoutForm() {
   const navigate = useNavigate()
@@ -34,6 +34,9 @@ export default function WorkoutForm() {
 
   const removeSet = (index) => setSets(sets.filter((_, i) => i !== index))
 
+  const isCardio = (exerciseId) =>
+    exercises.find((ex) => ex.id === Number(exerciseId))?.unit === 'min'
+
   const handleSubmit = async (e) => {
     e.preventDefault()
     setError('')
@@ -42,14 +45,26 @@ export default function WorkoutForm() {
       await api.createWorkout({
         notes,
         sets: sets
-          .filter((s) => s.exercise_id && s.reps !== '' && s.weight !== '')
-          .map((s) => ({
-            exercise_id: Number(s.exercise_id),
-            set_number: Number(s.set_number) || 1,
-            reps: Number(s.reps),
-            weight: Number(s.weight),
-            rpe: s.rpe === '' ? null : Number(s.rpe),
-          })),
+          .filter((s) => {
+            if (!s.exercise_id) return false
+            return isCardio(s.exercise_id) ? s.duration_minutes !== '' : s.reps !== '' && s.weight !== ''
+          })
+          .map((s) => {
+            if (isCardio(s.exercise_id)) {
+              return {
+                exercise_id: Number(s.exercise_id),
+                set_number: Number(s.set_number) || 1,
+                duration_seconds: Math.round(Number(s.duration_minutes) * 60),
+              }
+            }
+            return {
+              exercise_id: Number(s.exercise_id),
+              set_number: Number(s.set_number) || 1,
+              reps: Number(s.reps),
+              weight: Number(s.weight),
+              rpe: s.rpe === '' ? null : Number(s.rpe),
+            }
+          }),
       })
       navigate('/history')
     } catch (err) {
@@ -97,29 +112,46 @@ export default function WorkoutForm() {
                   className="w-full bg-surfaceHi rounded-lg px-2 py-2 font-mono outline-none"
                 />
               </div>
-              <div>
-                <label className="text-xs text-muted">Wdh.</label>
-                <input
-                  type="number"
-                  min={0}
-                  value={s.reps}
-                  onChange={(e) => updateSet(i, 'reps', e.target.value)}
-                  className="w-full bg-surfaceHi rounded-lg px-2 py-2 font-mono outline-none"
-                  required
-                />
-              </div>
-              <div>
-                <label className="text-xs text-muted">Gewicht (kg)</label>
-                <input
-                  type="number"
-                  step="0.5"
-                  min={0}
-                  value={s.weight}
-                  onChange={(e) => updateSet(i, 'weight', e.target.value)}
-                  className="w-full bg-surfaceHi rounded-lg px-2 py-2 font-mono outline-none"
-                  required
-                />
-              </div>
+              {isCardio(s.exercise_id) ? (
+                <div className="col-span-2">
+                  <label className="text-xs text-muted">Dauer (min)</label>
+                  <input
+                    type="number"
+                    step="0.5"
+                    min={0}
+                    value={s.duration_minutes}
+                    onChange={(e) => updateSet(i, 'duration_minutes', e.target.value)}
+                    className="w-full bg-surfaceHi rounded-lg px-2 py-2 font-mono outline-none"
+                    required
+                  />
+                </div>
+              ) : (
+                <>
+                  <div>
+                    <label className="text-xs text-muted">Wdh.</label>
+                    <input
+                      type="number"
+                      min={0}
+                      value={s.reps}
+                      onChange={(e) => updateSet(i, 'reps', e.target.value)}
+                      className="w-full bg-surfaceHi rounded-lg px-2 py-2 font-mono outline-none"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs text-muted">Gewicht (kg)</label>
+                    <input
+                      type="number"
+                      step="0.5"
+                      min={0}
+                      value={s.weight}
+                      onChange={(e) => updateSet(i, 'weight', e.target.value)}
+                      className="w-full bg-surfaceHi rounded-lg px-2 py-2 font-mono outline-none"
+                      required
+                    />
+                  </div>
+                </>
+              )}
             </div>
           </div>
         ))}

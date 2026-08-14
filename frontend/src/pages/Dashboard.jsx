@@ -23,9 +23,15 @@ export default function Dashboard() {
   useEffect(() => {
     if (!selectedExercise) return
     api.exerciseProgress(selectedExercise).then((points) =>
-      setProgress(points.map((p) => ({ ...p, date: new Date(p.date).toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit' }) })))
+      setProgress(points.map((p) => ({
+        ...p,
+        duration_minutes: Math.round((p.total_duration_seconds || 0) / 60),
+        date: new Date(p.date).toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit' }),
+      })))
     )
   }, [selectedExercise])
+
+  const selectedIsCardio = exercises.find((ex) => ex.id === selectedExercise)?.unit === 'min'
 
   return (
     <div className="px-4 pt-6 pb-24 max-w-lg mx-auto">
@@ -70,7 +76,14 @@ export default function Dashboard() {
                   contentStyle={{ background: '#1D2027', border: '1px solid #262B34', borderRadius: 8 }}
                   labelStyle={{ color: '#EDEDE6' }}
                 />
-                <Line type="monotone" dataKey="max_weight" stroke="#F2C14E" strokeWidth={2} dot={false} name="Max. Gewicht" />
+                <Line
+                  type="monotone"
+                  dataKey={selectedIsCardio ? 'duration_minutes' : 'max_weight'}
+                  stroke="#F2C14E"
+                  strokeWidth={2}
+                  dot={false}
+                  name={selectedIsCardio ? 'Dauer (min)' : 'Max. Gewicht'}
+                />
               </LineChart>
             </ResponsiveContainer>
           ) : (

@@ -49,7 +49,9 @@ export default function History() {
                 <li key={s.id} className="flex justify-between font-mono text-muted">
                   <span className="text-chalk">{s.exercise_name}</span>
                   <span>
-                    {s.reps} × {s.weight}kg
+                    {s.exercise_unit === 'min'
+                      ? `${Math.round(s.duration_seconds / 60)} min`
+                      : `${s.reps} × ${s.weight}kg`}
                   </span>
                 </li>
               ))}
